@@ -15,6 +15,14 @@ ship's own hull with a glowing breach at the waterline, and four big
 drones with bright wakes converging on it; moon and port kept small and
 quiet. Major panels keep their detailed motifs, the wireframe-globe
 masthead, and the complete markets ticker from the day's verified closes.
+
+Round-4 strengthening (on top of the redraw, same composition): hull
+plating lines and a whip antenna, radar dome and funnel light on the
+ship; a dock crane at the port; a tighter bright core for the blast
+with embers rising above the flames; brighter spray fans, bow waves and
+waterline shadows on the drones; a layered horizon band of wave strokes
+and a thin horizon glow; wavelets under the tanker motif; the hero
+sub-line fitted to its width instead of a fixed size.
 """
 
 import random
@@ -150,6 +158,7 @@ HX0, HY0, HX1, HY1 = MX, 296, RIGHT, 956
 SEA_Y = 600
 vgrad(d, HX0, HY0, HX1, SEA_Y, (8, 18, 36), (22, 48, 76))
 vgrad(d, HX0, SEA_Y, HX1, 756, (26, 80, 118), (9, 32, 56))
+d.line([HX0, SEA_Y, HX1, SEA_Y], fill=(140, 180, 215, 70), width=3)         # horizon glow
 
 # stars: many faint, a few bright with sparkle crosses
 for _ in range(140):
@@ -170,6 +179,7 @@ for (cx0, cy0, cx1, cy1), col in [
         ((HX0 + 30, 330, 700, 372), (10, 16, 28, 74)),
         ((900, 314, 1700, 352), (10, 16, 28, 64)),
         ((1300, 470, HX1 - 30, 506), (10, 16, 28, 58)),
+        ((1400, 316, 1980, 340), (10, 16, 28, 40)),
         ((560, 330, 1080, 358), (190, 200, 215, 15))]:
     d.ellipse([cx0, cy0, cx1, cy1], fill=col)
 
@@ -192,6 +202,14 @@ for bx, bw, bh, tone in [(120, 118, 74, DARK), (244, 96, 52, (11, 22, 34)),
     for gy in range(SEA_Y - bh + 12, SEA_Y - 8, 16):
         d.line([bx + 6, gy, bx + bw - 6, gy], fill=(30, 48, 66), width=2)
 
+# dock crane, just left of the bow: legs, top beam, jib and hook line
+d.line([492, SEA_Y, 496, SEA_Y - 96], fill=DARK, width=6)
+d.line([544, SEA_Y, 540, SEA_Y - 96], fill=DARK, width=6)
+d.line([488, SEA_Y - 96, 548, SEA_Y - 96], fill=DARK, width=6)
+d.line([520, SEA_Y - 96, 600, SEA_Y - 150], fill=DARK, width=5)
+d.line([590, SEA_Y - 148, 590, SEA_Y - 118], fill=DARK, width=3)
+d.rectangle([582, SEA_Y - 118, 598, SEA_Y - 106], fill=DARK)
+
 # distant headland on the horizon, right, kept low and dark
 d.polygon([(1830, SEA_Y), (1930, 580), (2000, 586), (2000, SEA_Y)], fill=(7, 12, 20))
 
@@ -204,6 +222,8 @@ HULL = [(560, SEA_Y), (700, SEA_Y - 104), (1860, SEA_Y - 104), (1920, SEA_Y)]
 d.polygon(HULL, fill=SHIP)
 d.line([700, SEA_Y - 104, 1860, SEA_Y - 104], fill=(168, 188, 208), width=5)  # sheer line
 d.line([590, SEA_Y - 6, 1900, SEA_Y - 6], fill=(96, 40, 30), width=4)        # boot-top
+d.line([720, SEA_Y - 72, 1840, SEA_Y - 72], fill=(96, 120, 144), width=2)   # hull plating
+d.line([730, SEA_Y - 54, 1830, SEA_Y - 54], fill=(88, 112, 136), width=2)
 for i, px in enumerate(range(760, 1830, 46)):                                 # portholes
     lit = (i % 4 == 1)
     d.ellipse([px, SEA_Y - 40, px + 11, SEA_Y - 29],
@@ -234,11 +254,14 @@ d.line([1072, SEA_Y - 264, 1174, SEA_Y - 264], fill=SHIP, width=6)            # 
 d.rectangle([1070, SEA_Y - 296, 1170, SEA_Y - 282], fill=SHIP2,
             outline=(150, 170, 192), width=2)                                 # radar bar
 d.ellipse([1118, SEA_Y - 298, 1130, SEA_Y - 286], fill=RED_L)                 # masthead light
+d.line([1000, SEA_Y - 240, 998, SEA_Y - 272], fill=SHIP2, width=3)            # whip antenna
+d.ellipse([995, SEA_Y - 276, 1001, SEA_Y - 270], fill=RED_L)
 
 # funnel with cap and a faint smoke trail of its own
 d.polygon([(1400, SEA_Y - 104), (1460, SEA_Y - 104), (1452, SEA_Y - 188),
            (1408, SEA_Y - 188)], fill=SHIP)
 d.rectangle([1406, SEA_Y - 196, 1454, SEA_Y - 186], fill=(60, 80, 104))
+d.ellipse([1426, SEA_Y - 202, 1434, SEA_Y - 194], fill=RED_L)                 # funnel light
 
 # aft block, windows, and a missile launcher
 d.rectangle([1560, SEA_Y - 172, 1700, SEA_Y - 104], fill=SHIP)
@@ -247,6 +270,8 @@ for wx in range(1576, 1640, 32):
 d.rectangle([1520, SEA_Y - 130, 1550, SEA_Y - 104], fill=SHIP2)
 d.line([1530, SEA_Y - 126, 1508, SEA_Y - 144], fill=SHIP2, width=7)
 d.line([1542, SEA_Y - 126, 1522, SEA_Y - 148], fill=SHIP2, width=7)
+d.ellipse([1617, SEA_Y - 199, 1643, SEA_Y - 173], fill=SHIP2,
+          outline=(150, 170, 192), width=2)                                   # radar dome
 
 # hull reflection on the water
 d.polygon([(590, SEA_Y + 4), (700, SEA_Y + 44), (1800, SEA_Y + 44),
@@ -283,9 +308,10 @@ for fx, fw, fh, col in [(-150, 30, 150, FIRE3), (-80, 34, 190, FIRE3),
                         (110, 26, 140, FIRE3)]:
     d.polygon([(EX + fx, EY + 5), (EX + fx + fw, EY + 5),
                (EX + fx + fw // 2, EY + 5 - fh)], fill=col)
-# small bright heart at the base, where the fire is hottest
-d.ellipse([EX - 70, EY - 10, EX + 70, EY + 40], fill=FIRE3)
-d.ellipse([EX - 45, EY - 15, EX + 45, EY + 25], fill=(255, 246, 214))
+# small bright heart at the base, where the fire is hottest — kept tight
+# so it reads as the core of the blast, not a pale shape on the deck
+d.ellipse([EX - 52, EY - 8, EX + 52, EY + 34], fill=FIRE3)
+d.ellipse([EX - 30, EY - 12, EX + 30, EY + 18], fill=(255, 246, 214))
 for _ in range(46):                                                           # sparks
     ang = rng.uniform(-2.6, -0.4)
     dist = rng.randint(60, 200)
@@ -294,6 +320,12 @@ for _ in range(46):                                                           # 
     r = rng.choice([2, 3, 3, 4])
     d.ellipse([sx - r, sy - r, sx + r, sy + r],
               fill=rng.choice([FIRE2, FIRE3, (255, 200, 110)]))
+for _ in range(14):                                                           # embers rising above the flames
+    ex = EX + rng.randint(-170, 180)
+    ey = EY - rng.randint(180, 300)
+    r = rng.choice([2, 3, 4])
+    d.ellipse([ex - r, ey - r, ex + r, ey + r],
+              fill=rng.choice([FIRE1, FIRE2, (255, 200, 110)]))
 # smoke plume hugging the blast, drifting up and to the left
 for sx, sy, sr, sa in [(1630, SEA_Y - 190, 34, 120), (1560, SEA_Y - 225, 42, 100),
                        (1480, SEA_Y - 250, 48, 80)]:
@@ -306,6 +338,13 @@ for _ in range(58):
     wl = rng.randint(60, 170)
     col = (150, 190, 220, 90) if rng.random() > 0.4 else (96, 146, 184, 70)
     d.line([wx, wy, wx + wl, wy], fill=col, width=4)
+
+# brighter, shorter wave strokes near the horizon to layer the sea
+for _ in range(26):
+    wx = rng.randint(HX0 + 20, HX1 - 190)
+    wy = rng.randint(SEA_Y + 8, SEA_Y + 42)
+    wl = rng.randint(30, 90)
+    d.line([wx, wy, wx + wl, wy], fill=(170, 205, 232, 110), width=3)
 
 # firelight shimmering on the sea under the blast
 for _ in range(30):
@@ -327,21 +366,25 @@ for _ in range(20):
 for dx, dy, sc in [(170, 660, 2.2), (470, 684, 2.4), (800, 664, 2.0), (1100, 690, 1.7)]:
     ln = int(128 * sc)
     body = (150, 170, 188)
+    d.ellipse([dx - int(6 * sc), dy + int(6 * sc), dx + ln + int(6 * sc),
+               dy + int(26 * sc)], fill=(8, 14, 24, 70))                     # waterline shadow
     d.polygon([(dx, dy), (dx + ln, dy + int(9 * sc)), (dx + ln - int(24 * sc), dy + int(21 * sc)),
                (dx + int(16 * sc), dy + int(19 * sc))], fill=body)
+    d.line([dx - int(10 * sc), dy + int(10 * sc), dx, dy + int(12 * sc)],
+           fill=(235, 244, 250, 200), width=4)                                # bow wave
     d.polygon([(dx + int(10 * sc), dy), (dx + int(36 * sc), dy - int(17 * sc)),
                (dx + int(56 * sc), dy)], fill=body)                            # fin
     d.polygon([(dx + int(52 * sc), dy + int(14 * sc)), (dx + int(84 * sc), dy + int(24 * sc)),
                (dx + int(58 * sc), dy + int(22 * sc))], fill=(100, 120, 138))  # wing
-    d.ellipse([dx + ln - int(34 * sc), dy + int(3 * sc), dx + ln - int(18 * sc),
-               dy + int(15 * sc)], fill=(255, 190, 90))                       # sensor eye
+    d.ellipse([dx + ln - int(38 * sc), dy + int(2 * sc), dx + ln - int(16 * sc),
+               dy + int(16 * sc)], fill=(255, 190, 90))                       # sensor eye
     d.ellipse([dx + int(30 * sc), dy - int(19 * sc), dx + int(36 * sc),
                dy - int(13 * sc)], fill=RED_L)                                # signal light
     for k in range(4):                                                        # spray fan
         wy = dy + int(20 * sc) + k * 6
         sx0 = max(HX0 + 8, dx - int((30 + k * 44) * sc))
         d.line([sx0, wy, dx - int(4 * sc), wy - 4],
-               fill=(220, 236, 244, 200 - k * 28), width=6)
+               fill=(225, 240, 248, 235 - k * 30), width=6)
     for k in range(2):                                                        # foam at its own waterline
         fy = dy + int(24 * sc) + k * 8
         fx0 = max(HX0 + 8, dx - int(150 * sc) + k * 24)
@@ -366,7 +409,8 @@ sub_f = fit_font(d, "Seven naval drones strike the warship Merkury in port — t
 d.text((HX0 + 36, 872),
        "Seven naval drones strike the warship Merkury in port — the UN seeks a probe",
        font=sub_f, fill=(226, 220, 202))
-sub2_f = font(SANS, 30)
+sub2_f = fit_font(d, "President Zelensky confirms the strike · Tripoli demands explanations from Kyiv",
+                  SANS, 32, HX1 - HX0 - 72, min_size=26)
 d.text((HX0 + 36, 919),
        "President Zelensky confirms the strike · Tripoli demands explanations from Kyiv",
        font=sub2_f, fill=GOLD)
@@ -394,6 +438,8 @@ def motif_tanker(x, y):
     d.rectangle([x + 176, y - 2, x + 186, y + 10], fill=NAVY)                 # funnel
     d.rectangle([x + 176, y - 2, x + 186, y + 3], fill=RED)
     d.line([x + 20, y + 44, x + 20, y + 14], fill=NAVY, width=4)              # mast
+    for wx in (x + 8, x + 78, x + 148):                                        # wavelets under the hull
+        d.line([wx, y + 78, wx + 34, y + 78], fill=NAVY2, width=3)
     for mx, my in [(x + 248, y + 52), (x + 282, y + 26), (x + 292, y + 82)]:  # mines
         d.ellipse([mx - 11, my - 11, mx + 11, my + 11], outline=RED, width=5)
         for ddx, ddy in [(0, -18), (0, 18), (-18, 0), (18, 0),

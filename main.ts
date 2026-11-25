@@ -10,6 +10,14 @@
 // shipped files lets the entry be verified byte for byte, and the manifest
 // itself is read back and re-verified against the files on disk.
 //
+// Round-4 hardening: the chunk walk also rejects timestamp-bearing
+// ancillary chunks (tEXt, iTXt, zTXt, tIME), so no metadata that could
+// carry a date or a free-text note can sneak into the shipped PNG and
+// break byte-for-byte reproduction; and the manifest read-back now
+// cross-checks the entry.png hash against the hash validated in stage 1
+// and requires every manifest path to be unique, so a duplicated or
+// swapped manifest entry is caught instead of silently shipped.
+//
 //   mkdir -p out && MAKEFUN_OUTPUT_DIR=out node main.ts
 
 import { copyFileSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -114,6 +122,9 @@ function walkPng(bytes: Buffer, label: string): PngInfo {
       fail(`${label} carries a second IHDR chunk at offset ${offset}`);
     }
     if (type === 'IDAT') idatCount++;
+    if (type === 'tEXt' || type === 'iTXt' || type === 'zTXt' || type === 'tIME') {
+      fail(`${label} carries a ${type} chunk at offset ${offset}; timestamp-bearing or free-text metadata must never ship in the entry PNG`);
+    }
     chunks.push({ type, length, offset });
     offset = crcEnd;
     if (type === 'IEND') break;
@@ -230,6 +241,23 @@ for (const entry of parsed.files) {
   if (data.length !== entry.bytes || sha256(data) !== entry.sha256) {
     fail(`manifest entry ${entry.path} does not match the file on disk`);
   }
+}
+// The manifest's entry.png hash must be the hash validated in stage 1:
+// a manifest that names different bytes than the validated image is a
+// swapped manifest, even if every entry matches its own file on disk.
+const manifestPng = parsed.files.find((entry) => entry.path === 'entry.png');
+if (manifestPng === undefined) {
+  fail('manifest has no entry.png entry');
+}
+if (manifestPng.sha256 !== srcHash) {
+  fail(`manifest entry.png sha256 ${manifestPng.sha256} does not match the validated image ${srcHash}`);
+}
+const seenPaths = new Set<string>();
+for (const entry of parsed.files) {
+  if (seenPaths.has(entry.path)) {
+    fail(`manifest lists ${entry.path} twice`);
+  }
+  seenPaths.add(entry.path);
 }
 for (let i = 1; i < parsed.files.length; i++) {
   if (!(parsed.files[i - 1].path < parsed.files[i].path)) {
